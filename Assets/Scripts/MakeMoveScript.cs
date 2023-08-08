@@ -163,7 +163,7 @@ public class MakeMoveScript : MonoBehaviour
     //Function that called every frame
     void Update(){
         // Если случилось нажатие, то нужно создать в нужной клетке крестик/нолик, наверно плохая идея делать это каждый фрейм, лучше лиснер повещать, но я так не умею
-        if(ClickReciver.obj != null)
+        if(ColliderClick.obj != null)
         {
             Cell moveCell = ClickReciver.obj.clickedObject;
             Transform instantiateCoords = moveCell.getObject().transform;
@@ -176,7 +176,7 @@ public class MakeMoveScript : MonoBehaviour
                 move = Instantiate(NullPrefab, instantiateCoords.position, Quaternion.identity);
             }
 
-            move.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform);
+            //move.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform);
             MakeMoveScript.instance.changeGameState();
             ClickReciver.obj = null;
             Pause.point.isOver = WinChecker.checkWin(field);
