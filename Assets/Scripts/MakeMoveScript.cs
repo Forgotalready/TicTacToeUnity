@@ -163,11 +163,10 @@ public class MakeMoveScript : MonoBehaviour
     //Function that called every frame
     void Update(){
         // Если случилось нажатие, то нужно создать в нужной клетке крестик/нолик, наверно плохая идея делать это каждый фрейм, лучше лиснер повещать, но я так не умею
-        if(ColliderClick.obj != null)
+        if(ClickReciver.obj != null)
         {
             Cell moveCell = ClickReciver.obj.clickedObject;
             Transform instantiateCoords = moveCell.getObject().transform;
-
             GameObject move = null;
             //Вообще считается, что создавать объект - это крайне плохая практика, но я спорт прогер, мне пофиг
             if(moveCell.getState() == State.CROSS){

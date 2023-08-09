@@ -6,8 +6,8 @@ public class ColliderClick : MonoBehaviour
     public static ColliderClick obj = null;
 
     void OnMouseDown() {
-        Debug.Log("This work");
         GameObject pressed = gameObject;
+        Debug.Log(gameObject.name);
         int n = MakeMoveScript.instance.field.size;
 
         bool stopFlag = false;
