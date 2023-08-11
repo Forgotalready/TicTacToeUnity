@@ -823,7 +823,7 @@ GameObject:
   - component: {fileID: 852129733}
   - component: {fileID: 852129732}
   m_Layer: 0
-  m_Name: Cell
+  m_Name: Cell (0)
   m_TagString: Cell
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
