@@ -152,7 +152,7 @@ public class MakeMoveScript : MonoBehaviour
     public GameObject[] cells;
     public State gameState = State.CROSS;
     public static MakeMoveScript instance;
-
+    public int moveCount = 0;
     public void changeGameState(){
         if(gameState == State.CROSS) gameState = State.NULL;
         else gameState = State.CROSS;
@@ -187,7 +187,9 @@ public class MakeMoveScript : MonoBehaviour
             //move.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform);
             MakeMoveScript.instance.changeGameState();
             ClickReciver.obj = null;
-            Pause.point.isOver = WinChecker.checkWin(field);
+            moveCount++;
+            if(moveCount == 9) Pause.point.isOver = true;
+            else Pause.point.isOver = WinChecker.checkWin(field);
         }
     }
 }
