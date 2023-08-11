@@ -9,7 +9,6 @@ public class ClickReciver : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData){
         GameObject pressed = eventData.pointerPress;
         int n = MakeMoveScript.instance.field.size;
-
         bool stopFlag = false;
         for(int i = 0;i < n;i++){
             for(int j = 0;j < n;j++){

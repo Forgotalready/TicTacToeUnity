@@ -135,6 +135,14 @@ public class WinChecker{
     }
 }
 
+class GameObjectComp : IComparer<GameObject>{
+    public int Compare(GameObject p1, GameObject p2){
+        int p1Comp = Int32.Parse(p1.name.Substring(6,1));
+        int p2Comp = Int32.Parse(p2.name.Substring(6,1));
+        return (p1Comp - p2Comp);
+    }
+}
+
 public class MakeMoveScript : MonoBehaviour
 {
     [SerializeField] GameObject CrossPrefab;
@@ -144,7 +152,7 @@ public class MakeMoveScript : MonoBehaviour
     public GameObject[] cells;
     public State gameState = State.CROSS;
     public static MakeMoveScript instance;
-
+    public int moveCount = 0;
     public void changeGameState(){
         if(gameState == State.CROSS) gameState = State.NULL;
         else gameState = State.CROSS;
@@ -154,6 +162,7 @@ public class MakeMoveScript : MonoBehaviour
     {
         instance = this;
         cells = GameObject.FindGameObjectsWithTag("Cell");
+        Array.Sort(cells, new GameObjectComp());
         foreach (GameObject item in cells)
         {
             Cell temp = (Cell) cellCreator.create(item);
@@ -167,7 +176,6 @@ public class MakeMoveScript : MonoBehaviour
         {
             Cell moveCell = ClickReciver.obj.clickedObject;
             Transform instantiateCoords = moveCell.getObject().transform;
-
             GameObject move = null;
             //Вообще считается, что создавать объект - это крайне плохая практика, но я спорт прогер, мне пофиг
             if(moveCell.getState() == State.CROSS){
@@ -176,10 +184,12 @@ public class MakeMoveScript : MonoBehaviour
                 move = Instantiate(NullPrefab, instantiateCoords.position, Quaternion.identity);
             }
 
-            move.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform);
+            //move.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform);
             MakeMoveScript.instance.changeGameState();
             ClickReciver.obj = null;
-            Pause.point.isOver = WinChecker.checkWin(field);
+            moveCount++;
+            if(moveCount == 9) Pause.point.isOver = true;
+            else Pause.point.isOver = WinChecker.checkWin(field);
         }
     }
 }
