@@ -171,7 +171,7 @@ public class MakeMoveScript : MonoBehaviour
     }
     //Function that called every frame
     void Update(){
-        // Если случилось нажатие, то нужно создать в нужной клетке крестик/нолик, наверно плохая идея делать это каждый фрейм, лучше лиснер повещать, но я так не умею
+        // Если случилось нажатие, то нужно создать в нужной клетке крестик/нолик, наверно плохая идея делать это каждый фрейм, лучше лиснер повешать, но я так не умею
         if(ClickReciver.obj != null)
         {
             Cell moveCell = ClickReciver.obj.clickedObject;
