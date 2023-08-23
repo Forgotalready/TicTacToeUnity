@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public enum State{
     CROSS,
@@ -147,6 +149,7 @@ public class MakeMoveScript : MonoBehaviour
 {
     [SerializeField] GameObject CrossPrefab;
     [SerializeField] GameObject NullPrefab;
+    [SerializeField] Text text;
     public Field field = new Field();
     public CellCreator cellCreator = new CellCreator();
     public GameObject[] cells;
@@ -157,7 +160,7 @@ public class MakeMoveScript : MonoBehaviour
         if(gameState == State.CROSS) gameState = State.NULL;
         else gameState = State.CROSS;
     }
-    
+
     void Start()
     {
         instance = this;
@@ -185,11 +188,23 @@ public class MakeMoveScript : MonoBehaviour
             }
 
             //move.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform);
-            MakeMoveScript.instance.changeGameState();
             ClickReciver.obj = null;
             moveCount++;
-            if(moveCount == 9) Pause.point.isOver = true;
-            else Pause.point.isOver = WinChecker.checkWin(field);
+            bool isWin = WinChecker.checkWin(field);
+            if(moveCount != 9 || isWin) {
+                if(isWin){
+                    if(gameState == State.CROSS) text.text = "Cross Win!!!";
+                    else{
+                       text.text = "Null Win!!!";
+                    }
+                    SceneManager.LoadScene ("SampleScene");
+                }
+            }
+            else {
+                text.text = "Draw";
+                SceneManager.LoadScene ("SampleScene");
+            }
+            MakeMoveScript.instance.changeGameState();
         }
     }
 }
