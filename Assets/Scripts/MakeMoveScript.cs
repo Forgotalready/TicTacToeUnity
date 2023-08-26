@@ -35,7 +35,6 @@ public class Cell : ICell{
     public GameObject getObject(){
         return gameObject;
     }
-
     public State getState(){
         return state;
     }
@@ -56,11 +55,11 @@ public class Cell : ICell{
 }
 
 public class Field{
-    private Cell[,] cells;
-    private int size_ = 3; // 3x3 matrix
+    private Cell[,] cells;// 3x3 matrix
+    private int size_ = 3; 
     private int counterRow = 0;
     private int counterCol = 0;
-
+    // next you can see magic ))
     public int size{
         get{
             return size_;
@@ -145,7 +144,7 @@ class GameObjectComp : IComparer<GameObject>{
     }
 }
 
-public class MakeMoveScript : MonoBehaviour
+public class MakeMoveScript : MonoBehaviour, Observer
 {
     [SerializeField] GameObject CrossPrefab;
     [SerializeField] GameObject NullPrefab;
@@ -156,6 +155,10 @@ public class MakeMoveScript : MonoBehaviour
     public State gameState = State.CROSS;
     public static MakeMoveScript instance;
     public int moveCount = 0;
+
+    private bool isOver = false;
+    private float time = 0;
+
     public void changeGameState(){
         if(gameState == State.CROSS) gameState = State.NULL;
         else gameState = State.CROSS;
@@ -164,6 +167,7 @@ public class MakeMoveScript : MonoBehaviour
     void Start()
     {
         instance = this;
+        ClickReciver.obj.regObserver(instance);
         cells = GameObject.FindGameObjectsWithTag("Cell");
         Array.Sort(cells, new GameObjectComp());
         foreach (GameObject item in cells)
@@ -172,39 +176,43 @@ public class MakeMoveScript : MonoBehaviour
             field.setCell(temp);
         }
     }
-    //Function that called every frame
-    void Update(){
-        // Если случилось нажатие, то нужно создать в нужной клетке крестик/нолик, наверно плохая идея делать это каждый фрейм, лучше лиснер повещать, но я так не умею
-        if(ClickReciver.obj != null)
-        {
-            Cell moveCell = ClickReciver.obj.clickedObject;
-            Transform instantiateCoords = moveCell.getObject().transform;
-            GameObject move = null;
-            //Вообще считается, что создавать объект - это крайне плохая практика, но я спорт прогер, мне пофиг
-            if(moveCell.getState() == State.CROSS){
-                move = Instantiate(CrossPrefab, instantiateCoords.position, Quaternion.identity);
-            }else{
-                move = Instantiate(NullPrefab, instantiateCoords.position, Quaternion.identity);
-            }
+    public void notifed(Cell moveCell){
+        if(isOver) return;
 
-            //move.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform);
-            ClickReciver.obj = null;
-            moveCount++;
-            bool isWin = WinChecker.checkWin(field);
-            if(moveCount != 9 || isWin) {
-                if(isWin){
-                    if(gameState == State.CROSS) text.text = "Cross Win!!!";
-                    else{
-                       text.text = "Null Win!!!";
-                    }
-                    SceneManager.LoadScene ("SampleScene");
+        Transform instantiateCoords = moveCell.getObject().transform;
+        GameObject move = null;
+        //Вообще считается, что создавать объект - это крайне плохая практика, но я спорт прогер, мне пофиг
+        if(moveCell.getState() == State.CROSS){
+            move = Instantiate(CrossPrefab, instantiateCoords.position, Quaternion.identity);
+        }else{
+            move = Instantiate(NullPrefab, instantiateCoords.position, Quaternion.identity);
+        }
+        moveCount++;
+        bool isWin = WinChecker.checkWin(field);
+        if(moveCount != 9 || isWin) {
+            if(isWin){
+                if(gameState == State.CROSS) text.text = "Cross Win!!!";
+                else{
+                    text.text = "Null Win!!!";
                 }
+                isOver = true;
             }
-            else {
+        }
+        else {
                 text.text = "Draw";
+                isOver = true;
+        }
+        changeGameState();
+    }
+    void Update(){
+        if(isOver){
+            time += Time.deltaTime;
+            if(time > 1.5){
                 SceneManager.LoadScene ("SampleScene");
             }
-            MakeMoveScript.instance.changeGameState();
         }
+
+        // Если случилось нажатие, то нужно создать в нужной клетке крестик/нолик, наверно плохая идея делать это каждый фрейм, лучше лиснер повешать, но я так не умею
+        //Теперь умею хехе
     }
 }
