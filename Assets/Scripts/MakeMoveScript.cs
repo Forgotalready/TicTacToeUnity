@@ -34,6 +34,8 @@ public class MakeMoveScript : MonoBehaviour, Observer
     private bool isOver = false;
     private float time = 0;
 
+    private MakeMoveScript(){}
+    
     public void changeGameState(){
         if(gameState == State.CROSS) gameState = State.NULL;
         else gameState = State.CROSS;
