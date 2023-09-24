@@ -1,10 +1,28 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
-
-public class ClickReciver : MonoBehaviour, IPointerClickHandler
+using System.Collections;
+using System.Collections.Generic;
+public class ClickReciver : MonoBehaviour, IPointerClickHandler, Subject
 {
+    private static List<Observer> obsList = new List<Observer> {};
     public Cell clickedObject = null;
     public static ClickReciver obj = null;
+
+    public void regObserver(Observer o){
+        obsList.Add(o);
+    }
+    public void delObserver(Observer o){
+        obsList.Remove(o);
+    }
+
+    public void notife(){
+        foreach(Observer o in obsList){
+            o.notifed(clickedObject);
+        }
+    }
+    void Start(){
+        obj = this;
+    }
 
     public void OnPointerClick(PointerEventData eventData){
         GameObject pressed = eventData.pointerPress;
@@ -16,7 +34,7 @@ public class ClickReciver : MonoBehaviour, IPointerClickHandler
                     if(MakeMoveScript.instance.field[i, j].getState() == State.EMPTY){
                         MakeMoveScript.instance.field[i, j] = MakeMoveScript.instance.field[i, j].changeState(MakeMoveScript.instance.field[i, j], MakeMoveScript.instance.gameState);
                         clickedObject = MakeMoveScript.instance.field[i, j];
-                        obj = this;
+                        notife();
                     }
                     stopFlag = true;
                     break;
